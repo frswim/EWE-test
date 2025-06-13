@@ -3,19 +3,10 @@
 
 運行時請如下動作執行:
 
-1. 安裝所需套件
+1. 安裝所需套件 ```npm install```
 
 
-```npm install```
+2. 運行於本地端 ```npm run dev```
 
 
-2. 運行於本地端
-
-
-```npm run dev```
-
-
-3. 透過連結進入
-
-
-http://localhost:5137
+3. 透過連結進入 http://localhost:5137
