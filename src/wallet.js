@@ -1,22 +1,24 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
-import { mainnet } from 'wagmi/chains';
+import { mainnet, arbitrum, sepolia } from 'wagmi/chains';
 
 const projectId = '17e75bfaa8c00c758e184a3d27137dee';
-const chains = [mainnet];
+const chains = [ mainnet, arbitrum, sepolia ];
 
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  transports: {
+  ssr: true,
+  /*transports: {
     [mainnet.id]: "http://mainnet.Infura.io",
-  },
+  },*/
 });
 
 const web3Modal = createWeb3Modal({
-  wagmiConfig,
+  wagmiConfig: wagmiConfig,
   projectId,
-  chains,
-  themeMode: 'dark'
+  enableAnalytics: true,
+  enableOnramp: true,
+  themeMode: "light"
 });
 
 

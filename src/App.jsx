@@ -3,9 +3,10 @@ import { useAccount } from 'wagmi';
 import Web3 from 'web3';
 import './App.css';
 import { web3Modal } from './wallet';
+const res = await fetch('/ChainList.json');
+const chainMap = await res.json();
 
 function App() {
-  const [chainMap, setChainMap] = useState({});
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
   const [chain, setChain] = useState(null);
@@ -23,42 +24,52 @@ function App() {
     }
   };
 
-  // 載入 ChainList.json
-  useEffect(() => {
-    const loadChainMap = async () => {
-      try {
-        const res = await fetch('/ChainList.json');
-        const json = await res.json();
-        setChainMap(json);
-      } catch (err) {
-        console.error('載入鏈資料失敗:', err);
-      }
-    };
-    loadChainMap();
-  }, []);
-
   // 錢包連線成功後，執行 Web3 查詢
   useEffect(() => {
-    const init = async () => {
-      if (!connector) return;
-      const provider = await connector.getProvider();
-      const web3Instance = new Web3(provider);
-      setWeb3(web3Instance);
+    if (!connector) return;
 
-      const accounts = await web3Instance.eth.getAccounts();
+    let provider;
+    let web3Instance;
+
+    const handleAccountsChanged = async (accounts) => {
+      if (accounts.length === 0) return;
       const account = accounts[0];
-      console.log(account)
       setAccount(account);
-
-      const chainId = await web3Instance.eth.getChainId();
-      setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
 
       const balanceWei = await web3Instance.eth.getBalance(account);
       const balanceEth = web3Instance.utils.fromWei(balanceWei, 'ether');
       setBalance(parseFloat(balanceEth).toFixed(4));
     };
 
+    const handleChainChanged = async (chainIdHex) => {
+      const chainId = parseInt(chainIdHex, 16);
+      setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
+    };
+
+    const init = async () => {
+      provider = await connector.getProvider();
+      web3Instance = new Web3(provider);
+      setWeb3(web3Instance);
+
+      const accounts = await web3Instance.eth.getAccounts();
+      handleAccountsChanged(accounts);
+
+      const chainId = await web3Instance.eth.getChainId();
+      setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
+
+      // Add listeners
+      provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('chainChanged', handleChainChanged);
+    };
+
     init();
+
+    return () => {
+      if (provider?.removeListener) {
+        provider.removeListener('accountsChanged', handleAccountsChanged);
+        provider.removeListener('chainChanged', handleChainChanged);
+      }
+    };
   }, [connector]);
 
   // 定時取得 Gas Price

@@ -12,5 +12,7 @@
   "44d": "zkSync Era",
   "80002": "Polygon Amoy Testnet",
   "59144": "Linea Mainnet",
-  "8217": "Kaia Mainnet"
+  "8217": "Kaia Mainnet",
+  "42161": "Arbitrum One",
+  "11155111": "Sepolia"
 }
