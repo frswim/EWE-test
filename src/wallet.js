@@ -8,9 +8,7 @@ const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   ssr: true,
-  /*transports: {
-    [mainnet.id]: "http://mainnet.Infura.io",
-  },*/
+
 });
 
 const web3Modal = createWeb3Modal({

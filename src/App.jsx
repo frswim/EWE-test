@@ -26,7 +26,12 @@ function App() {
 
   // 錢包連線成功後，執行 Web3 查詢
   useEffect(() => {
-    if (!connector) return;
+    if (!connector) {
+      setAccount(null);
+      setChain(null)
+      setBalance(null)
+      return;
+    }
 
     let provider;
     let web3Instance;
@@ -94,17 +99,24 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h2>DApp with Web3Modal v2</h2>
-      <button onClick={connectWallet}>連接錢包</button>
+      <h1>EWE-DApp-Test</h1>
+      <button class = "fancy-button" onClick={connectWallet}>
+        {!account ? (
+          '連接錢包'
+        ) : (
+          <div>
+            <div>帳號：{account}</div>
+            <div>鏈名稱：{chain}</div>
+            <div>餘額：{balance} ETH</div>
+          </div>
+        )}
+      </button>
       {!account ? (
-        <div>尚未連線錢包</div>
+        "尚未連接"
       ) : (
-        <div>
-          <p>帳號：{account}</p>
-          <p>鏈名稱：{chain}</p>
-          <p>餘額：{balance} ETH</p>
-          <p>Gas Price：{gasPrice} Gwei</p>
-          <p>更新時間：{lastUpdated}</p>
+        <div style={{ textAlign: 'center' }}>
+          <div>Gas Price：{gasPrice} Gwei</div>
+          <div>更新時間：{lastUpdated}</div>
         </div>
       )}
     </div>
