@@ -1,5 +1,5 @@
 # 錢包DApp (羊星測驗)
-此版本運用 vite + react ，並使用reown (原walletConnect) 建立多種錢包的連結支援。
+此版本運用 vite + react + wagmi，並使用reown (原walletConnect) 建立多種錢包的連結支援。
 
 運行時請如下動作執行:
 
