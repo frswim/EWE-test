@@ -1,12 +1,11 @@
-# React + Vite
+# 錢包DApp (羊星測驗)
+此版本運用 vite + react ，並使用reown (原walletConnect) 建立多種錢包的連結支援。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+運行時請如下動作執行:
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. 安裝所需套件
+`npm install`
+2. 運行於本地端
+`npm run dev`
+3. 透過連結進入
+http://localhost:5137
