@@ -18,14 +18,16 @@ function App() {
 
   const connectWallet = async () => {
     try {
-      await web3Modal.open(); // 開啟連接錢包
+      // 開啟連接錢包
+      await web3Modal.open();
     } catch (err) {
       console.error('連線錯誤', err);
     }
   };
 
-  // 錢包連線成功後，執行 Web3 查詢
+  //Step.1 錢包連線成功後，執行 Web3 查詢 (When get connector)
   useEffect(() => {
+    //Step.1-1 確定是否有連線response
     if (!connector) {
       setAccount(null);
       setChain(null)
@@ -36,33 +38,53 @@ function App() {
     let provider;
     let web3Instance;
 
+    //(事件)是否改變帳號(Change account&balance)
     const handleAccountsChanged = async (accounts) => {
       if (accounts.length === 0) return;
       const account = accounts[0];
+      //重新取得帳號
       setAccount(account);
-
+      //重新取得餘額
       const balanceWei = await web3Instance.eth.getBalance(account);
       const balanceEth = web3Instance.utils.fromWei(balanceWei, 'ether');
-      setBalance(parseFloat(balanceEth).toFixed(4));
+      setBalance(parseFloat(balanceEth).toFixed(6));
     };
 
+    //(事件)是否更改鏈(Change web3&chain&balance&gasprice)
     const handleChainChanged = async (chainIdHex) => {
+      //重新取得Web3
+      const newProvider = await connector.getProvider();
+      const newWeb3 = new Web3(newProvider);
+      setWeb3(newWeb3);
+
+      //重新取得鏈名
       const chainId = parseInt(chainIdHex, 16);
       setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
+
+      //重新取得餘額
+      const balanceWei = await web3Instance.eth.getBalance(account);
+      const balanceEth = web3Instance.utils.fromWei(balanceWei, 'ether');
+      setBalance(parseFloat(balanceEth).toFixed(6));
+
+      //useEffect會因Web3重新渲染gas price
     };
 
+    //Step.1-2 初始化
     const init = async () => {
+      //取得 Web3 連接
       provider = await connector.getProvider();
       web3Instance = new Web3(provider);
       setWeb3(web3Instance);
 
+      //取得帳號與餘額
       const accounts = await web3Instance.eth.getAccounts();
       handleAccountsChanged(accounts);
 
+      //取得鏈名
       const chainId = await web3Instance.eth.getChainId();
       setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
 
-      // Add listeners
+      // 透過provider監聽錢包內事件
       provider.on('accountsChanged', handleAccountsChanged);
       provider.on('chainChanged', handleChainChanged);
     };
@@ -77,15 +99,17 @@ function App() {
     };
   }, [connector]);
 
-  // 定時取得 Gas Price
+  //Step.2 定時取得 Gas Price (When web3&account changed)
   useEffect(() => {
+    //Step.2-1 確認錢包已連線
     if (!web3 || !account) return;
-
+    
+    //Step.2-2 取得Gas Price
     const fetchGasPrice = async () => {
       try {
         const priceWei = await web3.eth.getGasPrice();
         const priceGwei = web3.utils.fromWei(priceWei, 'gwei');
-        setGasPrice(parseFloat(priceGwei).toFixed(2));
+        setGasPrice(parseFloat(priceGwei).toFixed(6));
         setLastUpdated(new Date().toLocaleString());
       } catch (err) {
         console.error('取得 gas price 失敗:', err);
@@ -93,6 +117,7 @@ function App() {
     };
 
     fetchGasPrice();
+    //Step.2-3 設定5秒更新
     const interval = setInterval(fetchGasPrice, 5000);
     return () => clearInterval(interval);
   }, [web3, account]);
@@ -106,7 +131,7 @@ function App() {
         ) : (
           <div>
             <div>帳號：{account}</div>
-            <div>鏈名稱：{chain}</div>
+            <div>鏈名：{chain}</div>
             <div>餘額：{balance} ETH</div>
           </div>
         )}
