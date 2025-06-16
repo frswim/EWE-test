@@ -1,8 +1,8 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
-import { mainnet, arbitrum, sepolia } from 'wagmi/chains';
+import { mainnet, arbitrum, sepolia, polygon } from 'wagmi/chains';
 
 const projectId = '17e75bfaa8c00c758e184a3d27137dee';
-const chains = [ mainnet, arbitrum, sepolia ];
+const chains = [ mainnet, arbitrum, sepolia, polygon ];
 
 const wagmiConfig = defaultWagmiConfig({
   chains,

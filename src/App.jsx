@@ -9,7 +9,7 @@ const chainMap = await res.json();
 function App() {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
-  const [chain, setChain] = useState(null);
+  const [chain, setChain] = useState(["Unknown","Unknown"]);
   const [balance, setBalance] = useState(null);
   const [gasPrice, setGasPrice] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -30,7 +30,7 @@ function App() {
     //Step.1-1 確定是否有連線response
     if (!connector) {
       setAccount(null);
-      setChain(null)
+      setChain(["Unknown","Unknown"])
       setBalance(null)
       return;
     }
@@ -44,6 +44,7 @@ function App() {
       const account = accounts[0];
       //重新取得帳號
       setAccount(account);
+
       //重新取得餘額
       const balanceWei = await web3Instance.eth.getBalance(account);
       const balanceEth = web3Instance.utils.fromWei(balanceWei, 'ether');
@@ -54,15 +55,16 @@ function App() {
     const handleChainChanged = async (chainIdHex) => {
       //重新取得Web3
       const newProvider = await connector.getProvider();
-      const newWeb3 = new Web3(newProvider);
-      setWeb3(newWeb3);
+      web3Instance = new Web3(newProvider);
+      setWeb3(web3Instance);
 
       //重新取得鏈名
       const chainId = parseInt(chainIdHex, 16);
-      setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
-
+      setChain(chainMap[chainId] || [`Unknown (ID: ${chainId})`, "Unknown Token"]);
+      
       //重新取得餘額
-      const balanceWei = await web3Instance.eth.getBalance(account);
+      const accounts = await web3Instance.eth.getAccounts(); //因為useState非同步，有可能null
+      const balanceWei = await web3Instance.eth.getBalance(accounts[0]);
       const balanceEth = web3Instance.utils.fromWei(balanceWei, 'ether');
       setBalance(parseFloat(balanceEth).toFixed(6));
 
@@ -82,7 +84,7 @@ function App() {
 
       //取得鏈名
       const chainId = await web3Instance.eth.getChainId();
-      setChain(chainMap[chainId] || `Unknown (ID: ${chainId})`);
+      setChain(chainMap[chainId] || [`Unknown (ID: ${chainId})`, "Unknown Token"]);
 
       // 透過provider監聽錢包內事件
       provider.on('accountsChanged', handleAccountsChanged);
@@ -125,14 +127,14 @@ function App() {
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>EWE-DApp-Test</h1>
-      <button class = "fancy-button" onClick={connectWallet}>
+      <button className = "fancy-button" onClick={connectWallet}>
         {!account ? (
           '連接錢包'
         ) : (
           <div>
             <div>帳號：{account}</div>
-            <div>鏈名：{chain}</div>
-            <div>餘額：{balance} ETH</div>
+            <div>鏈名：{chain[0]}</div>
+            <div>餘額：{balance} {chain[1]}</div>
           </div>
         )}
       </button>
