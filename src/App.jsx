@@ -68,7 +68,7 @@ function App() {
       const balanceEth = web3Instance.utils.fromWei(balanceWei, 'ether');
       setBalance(parseFloat(balanceEth).toFixed(6));
 
-      //useEffect會因Web3重新渲染gas price
+      //useEffect會因Web3重新渲染gas price(不用多寫)
     };
 
     //Step.1-2 初始化
@@ -86,7 +86,7 @@ function App() {
       const chainId = await web3Instance.eth.getChainId();
       setChain(chainMap[chainId] || [`Unknown (ID: ${chainId})`, "Unknown Token"]);
 
-      // 透過provider監聽錢包內事件
+      //透過provider監聽錢包內事件(因錢包內事件connector無反應)
       provider.on('accountsChanged', handleAccountsChanged);
       provider.on('chainChanged', handleChainChanged);
     };
@@ -124,6 +124,7 @@ function App() {
     return () => clearInterval(interval);
   }, [web3, account]);
 
+  //Step.3 回傳顯示頁面
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>EWE-DApp-Test</h1>
