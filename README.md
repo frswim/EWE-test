@@ -10,3 +10,11 @@
 
 
 3. 透過連結進入 http://localhost:5137
+
+
+# 各檔用途:
+1. App.jsx:存在於 /src ，負責本Dapp的渲染元件控制。
+2. main.jsx:存在於 /src ，負責渲染App.jsx。
+3. wallet.js:存在於 /src ，負責Dapp可連接之區塊鏈的設定。
+4. ChainList.json:存在於 /public ，提供區塊鏈名與代幣的Library。
+5. App.css, main.css:存在於 /src ，負責渲染樣式。
