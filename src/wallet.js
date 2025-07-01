@@ -14,10 +14,10 @@ const wagmiConfig = defaultWagmiConfig({
 
 //建立彈窗(Appkit)樣式
 const web3Modal = createWeb3Modal({
-  wagmiConfig: wagmiConfig,
+  wagmiConfig: wagmiConfig, //建立連線的方法配置
   projectId,
-  enableAnalytics: true,
-  enableOnramp: true,
+  enableAnalytics: true, //紀錄有錢包使用數據
+  enableOnramp: true, //開啟法幣購買
   themeMode: "light"
 });
 
